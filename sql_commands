@@ -1,0 +1,166 @@
+SELECT * FROM "@Meiirkhan"."logistics_delay_cleaned";
+
+
+SELECT 
+  shipping_mode,
+  COUNT(*) AS total_orders,
+  sum(CASE WHEN label=1 THEN 1 ELSE 0 END) as delays,
+  ROUND(sum(CASE WHEN label=1 THEN 1 ELSE 0 END)*100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY shipping_mode
+ORDER BY delay_rate DESC;
+
+
+SELECT 
+  EXTRACT(DOW FROM order_date) AS weekday,
+  AVG(DATEDIFF(shipping_date, order_date)) AS avg_delivery_days
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY EXTRACT(DOW FROM order_date)
+ORDER BY weekday;
+
+SELECT
+customer_segment,
+count(*) as total_orders,
+sum(case when label=1 then 1 else 0 end) as number_of_delay,
+ROUND(sum(CASE WHEN label=1 THEN 1 ELSE 0 END)*100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY customer_segment;
+
+SELECT 
+market,
+count(*) as total, 
+sum(case when label=1 then 1 else 0 end) as num_of_delay,
+round(sum(case when label = 1 then 1 else 0 end)*100 / count(*), 2) as delya_rate
+from "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY market;
+
+SELECT 
+  ROUND(order_item_discount_rate, 2) AS discount_bucket,
+  COUNT(*) AS total,
+  sum(case when label=1 then 1 else 0 end) AS delays,
+  ROUND(sum(case when label=1 then 1 else 0 end)*100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY ROUND(order_item_discount_rate, 2)
+ORDER BY total desc, delay_rate desc;
+
+
+SELECT 
+  order_country,
+  COUNT(*) AS orders,
+  sum(case when label=1 then 1 else 0 end) AS delays,
+  ROUND(sum(case when label=1 then 1 else 0 end)*100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY order_country
+ORDER BY delay_rate desc, orders desc;
+
+SELECT 
+  COUNT(*) AS total_orders,
+  SUM(CASE WHEN label = 1 THEN 1 ELSE 0 END) AS delayed_orders,
+  ROUND(SUM(CASE WHEN label = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned";
+
+SELECT 
+  label,
+  COUNT(*) AS order_count,
+  ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY label
+ORDER BY rate DESC;
+
+SELECT 
+  order_region,
+  COUNT(*) AS total,
+  sum(case when label=1 then 1 else 0 end) AS delayed,
+  ROUND(sum(case when label=1 then 1 else 0 end) * 100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY order_region
+ORDER BY delay_rate DESC;
+
+SELECT 
+  DATE_TRUNC('month', order_date) AS mon,
+  COUNT(*) AS total,
+  sum(case when label=1 then 1 else 0 end) AS delayed,
+  ROUND(sum(case when label=1 then 1 else 0 end) * 100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY DATE_TRUNC('month', order_date)
+ORDER BY mon;
+
+
+
+SELECT 
+  product_name,
+  COUNT(*) AS total_orders,
+  sum(case when label=1 then 1 else 0 end) AS delayed_orders,
+  ROUND(sum(case when label=1 then 1 else 0 end) * 100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY product_name
+HAVING COUNT(*) > 50
+ORDER BY delay_rate DESC;
+
+
+SELECT 
+  shipping_mode,
+  COUNT(*) AS total_orders,
+  SUM(CASE WHEN CAST(label AS INT) = 1 THEN 1 ELSE 0 END) AS delayed_orders,
+  ROUND(SUM(CASE WHEN CAST(label AS INT) = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY shipping_mode
+ORDER BY delay_rate DESC;
+
+SELECT 
+  ROUND(order_item_discount_rate, 2) AS discount_bucket,
+  COUNT(*) AS total,
+  sum(case when label=1 then 1 else 0 end) AS delays,
+  ROUND(sum(case when label=1 then 1 else 0 end)*100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY ROUND(order_item_discount_rate, 2)
+ORDER BY total desc, delay_rate desc;
+
+
+SELECT 
+  EXTRACT(DOW FROM order_date) AS weekday,
+  COUNT(*) AS total_orders,
+  SUM(CASE WHEN CAST(label AS INT) = 1 THEN 1 ELSE 0 END) AS delayed_orders,
+  ROUND(SUM(CASE WHEN CAST(label AS INT) = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY EXTRACT(DOW FROM order_date)
+ORDER BY delay_rate DESC;
+
+
+SELECT 
+  order_region,
+  COUNT(*) AS total_orders,
+  SUM(CASE WHEN CAST(label AS INT) = 1 THEN 1 ELSE 0 END) AS delayed_orders,
+  ROUND(SUM(CASE WHEN CAST(label AS INT) = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY order_region
+ORDER BY delay_rate DESC;
+
+SELECT 
+  order_item_quantity,
+  COUNT(*) AS total_orders,
+  SUM(CASE WHEN CAST(label AS INT) = 1 THEN 1 ELSE 0 END) AS delayed_orders,
+  ROUND(SUM(CASE WHEN CAST(label AS INT) = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY order_item_quantity
+ORDER BY delay_rate DESC;
+
+
+SELECT 
+  order_status,
+  COUNT(*) AS total_orders,
+  SUM(CASE WHEN label = 1 THEN 1 ELSE 0 END) AS delayed_orders,
+  ROUND(SUM(CASE WHEN label = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY order_status
+ORDER BY delay_rate DESC;
+
+SELECT 
+  product_name,
+  COUNT(*) AS total_orders,
+  SUM(CASE WHEN label = 1 THEN 1 ELSE 0 END) AS delayed_orders,
+  ROUND(SUM(CASE WHEN label = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS delay_rate
+FROM "@Meiirkhan"."logistics_delay_cleaned"
+GROUP BY product_name
+HAVING COUNT(*) > 50
+ORDER BY delay_rate DESC;
