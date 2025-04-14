@@ -1,0 +1,7 @@
+delay_rate = 
+    DIVIDE(
+        SUMX(FILTER(logistics_delay_cleaned, logistics_delay_cleaned[label] = 1), 1),
+        COUNT(logistics_delay_cleaned[order_id]),
+        0
+    )
+    
